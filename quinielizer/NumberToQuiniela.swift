@@ -17,7 +17,7 @@ struct NumberToQuiniela {
     let mapping: QuinielaMapping
 
     func map(_ number: Int) throws -> String {
-        return try decompose(number: number)
+        return try separateInDigitPairs(number: number)
             .map { try mapping.describe($0) }
             .joined(separator: NumberToQuiniela.separator)
     }
@@ -28,7 +28,7 @@ struct NumberToQuiniela {
             return try map("0"+number)
         }
 
-        return try decompose(string: number)
+        return try separateInDigitPairs(string: number)
             .map { try $0.asQuinielaNumber() }
             .map { try mapping.describe($0) }
             .joined(separator: NumberToQuiniela.separator)
@@ -40,7 +40,7 @@ struct NumberToQuiniela {
     /// 100    => [1, 0]
     /// 1020   => [10, 20]
     /// ```
-    private func decompose(number: Int) -> [QuinielaNumber] {
+    private func separateInDigitPairs(number: Int) -> [QuinielaNumber] {
         var pairs: [QuinielaNumber] = []
 
         var moreSignificativeDigits = number
@@ -60,7 +60,7 @@ struct NumberToQuiniela {
     /// "100"    => ["10", "0"]
     /// "1020"   => ["10", "20"]
     /// ```
-    private func decompose(string: String) -> [String] {
+    private func separateInDigitPairs(string: String) -> [String] {
         var pairs: [String] = Array(repeating: "", count: (string.characters.count + 1) / 2)
 
         for i in 0..<string.characters.count {
